@@ -11,13 +11,6 @@ fs.readFile("./setings.json", function (err, data) {
     photoPath = (parsedData.photoPath);
 });
 
-/*if (rootPath === null) {
-    console.log('Please provide a root path in the settings');
-}
-if (photoPath === null) {
-    console.log('Please provide a photo path in the settings');
-}*/
-
 
 const server = http.createServer(async (request, response) => {
     let filePath = path.join(rootPath, request.url);
@@ -49,6 +42,13 @@ const server = http.createServer(async (request, response) => {
                 response.end(JSON.stringify(imageNames), 'utf-8');
             }
         });
+        return;
+    }
+
+    if (request.url.startsWith('/ppp/photos')) {
+        filePath = path.join(photoPath, request.url.substring("/ppp/photos".length, request.url.length));
+        filePath = decodeURI(filePath);
+        sendFile(filePath, response);
         return;
     }
 
