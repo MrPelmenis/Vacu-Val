@@ -1,6 +1,33 @@
 'use strict';
-function start() {
-    console.log("Start");
+async function start() {
+
+    let response = await fetch('http://localhost:20063/' + "giveAllCategories", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    });
+    let listOfCategories = await response.json();
+
+    console.log(listOfCategories[6]);
+
+
+    listOfCategories.forEach((category) => {
+        document.getElementById("startContainer").innerHTML += "<br>";
+        var checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.name = category.name;
+        checkbox.value = category.name;
+        checkbox.id = category.name;
+        var label = document.createElement('label');
+        label.htmlFor = category.name;
+        label.innerHTML = "    " + category.name;
+        document.getElementById("startContainer").appendChild(checkbox);
+        document.getElementById("startContainer").appendChild(label);
+
+    })
+
 }
 
 let leadPath = "/ppp/photos/";
@@ -99,8 +126,10 @@ function textToSpeech(text) {
 
 async function imageIsClicked(event, imageID) {
     if (curentCorrectImgID == imageID) {
+        document.getElementById("progressBar").value++;
         await replaceImagesRandomly(imageID);
     } else {
+        document.getElementById("progressBar").value -= 2;
         failSound.play();
     }
 }
@@ -110,7 +139,6 @@ function repeatText() {
 }
 
 async function replaceImagesRandomly(clickedImageID) {
-
     let selectedFourImages = [];
     for (let i = 0; i < 4; i++) {
         selectedFourImages.push(neededPictureFileNames[Math.floor(Math.random() * neededPictureFileNames.length)]);
@@ -118,7 +146,7 @@ async function replaceImagesRandomly(clickedImageID) {
 
     curentCorrectImgID = imageIds[Math.floor(Math.random() * selectedFourImages.length)];
     for (let i = 0; i < 4; i++) {
-        let randomPic = selectedFourImages[Math.floor(Math.random() * selectedFourImages.length)];
+        let randomPic = selectedFourImages[i];
 
 
         let tempImg = new Image();

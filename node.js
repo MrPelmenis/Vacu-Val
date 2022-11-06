@@ -1,6 +1,7 @@
 'use strict';
 const http = require('http');
 var fs = require('fs'), path = require('path');
+const { unwatchFile } = require('fs');
 const port = 20063;
 let rootPath = null;
 let photoPath = null;
@@ -44,6 +45,15 @@ const server = http.createServer(async (request, response) => {
         });
         return;
     }
+
+    if (request.url.startsWith("/giveAllCategories")) {
+        let fileObj = fs.readdirSync("./photos", { withFileTypes: true });
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify(fileObj), 'utf-8');
+        return;
+    }
+
+
 
     if (request.url.startsWith('/ppp/photos')) {
         filePath = path.join(photoPath, request.url.substring("/ppp/photos".length, request.url.length));
